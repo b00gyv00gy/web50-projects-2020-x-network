@@ -3,12 +3,17 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms
 
-from .models import User
+from .models import User, Post, Like, Follower
 
+class ContentForm(forms.Form):
+    pass
 
 def index(request):
-    return render(request, "network/index.html")
+    return render(request, "network/index.html",{
+        "posts": Post.objects.all()
+    })
 
 
 def login_view(request):
@@ -61,3 +66,38 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def create_post(request):
+
+    form = ContentForm(request.POST)
+
+    if request.method == "POST":
+        content = request.POST["content"]
+        author = request.user
+        
+        try:
+            post = Post(content=content, author=author)
+            post.save()
+            
+        except IntegrityError:
+            return render(request, "network/index.html", {
+                "message": "smth is wrong"
+            })
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "network/index.html")
+
+def profile(request):
+    return render(request, "network/profile.html", {
+        "follows": Follower.objects.filter(follows=request.user).count(),
+        "followed": Follower.objects.filter(followed=request.user).count(),
+        "posts": Post.objects.filter(author=request.user)
+    })
+
+def following(request):
+
+    follows = Follower.objects.filter(follows=request.user)
+    return render(request, "network/index.html", {
+        "posts": Post.objects.filter(author__in=follows)
+    })
+
