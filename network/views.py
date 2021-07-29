@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import User, Post, Like, Follower
 
@@ -11,8 +12,15 @@ class ContentForm(forms.Form):
     pass
 
 def index(request):
+    
+    posts = Post.objects.all().order_by('-created')
+    paginator = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, "network/index.html",{
-        "posts": Post.objects.all()
+        "page_obj": page_obj
     })
 
 
@@ -88,16 +96,35 @@ def create_post(request):
         return render(request, "network/index.html")
 
 def profile(request):
+
+    posts = Post.objects.filter(author=request.user).order_by('-created')
+    paginator = Paginator(posts, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/profile.html", {
         "follows": Follower.objects.filter(follows=request.user).count(),
         "followed": Follower.objects.filter(followed=request.user).count(),
-        "posts": Post.objects.filter(author=request.user)
+        "page_obj": page_obj
     })
 
+@login_required
 def following(request):
 
     follows = Follower.objects.filter(follows=request.user)
+    posts = Post.objects.none()
+    
+    for user in follows:
+        posts |= Post.objects.filter(author=user.followed)
+    
+    posts.order_by('-created') #CHECK, does not work for some reason
+
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     return render(request, "network/index.html", {
-        "posts": Post.objects.filter(author__in=follows)
+        "page_obj": page_obj
     })
 
