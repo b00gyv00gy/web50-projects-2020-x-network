@@ -113,12 +113,10 @@ def profile(request):
 def following(request):
 
     follows = Follower.objects.filter(follows=request.user)
-    posts = Post.objects.none()
-    
+    followed = []
     for user in follows:
-        posts |= Post.objects.filter(author=user.followed)
-    
-    posts.order_by('-created') #CHECK, does not work for some reason
+        followed.append(user.followed)
+    posts = Post.objects.filter(author__in=followed).order_by('-created')
 
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
