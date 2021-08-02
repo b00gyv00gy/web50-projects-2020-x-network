@@ -2,7 +2,7 @@
 
 {% block body %}
     {% if user.is_authenticated %}
-    <div id="new_post">   
+    <div id="new_post" style="display: block;">   
     New Post
         <form action="{% url 'create_post' %}" method="post"> 
             {% csrf_token %}
@@ -18,10 +18,15 @@
     {% endif %}
 
     {% for post in page_obj %}
-        <p>{{post.content}}</p>
-        <p>Posted by {{post.author}}</p>
-        <p>on {{post.created}}</p>
-        <p></p>
+        <div class="post">
+            <textarea readonly>{{post.content}}</textarea>
+            <p>Posted by {{post.author}} on {{post.created}}</p>
+            
+            {%if user == post.author%}
+                <button>EDIT</button>
+            {%endif%}
+
+        </div>    
     {%endfor%}
     
     <div class="pagination">
@@ -41,6 +46,5 @@
             {% endif %}
         </span>
     </div>
-
 
 {% endblock %}
