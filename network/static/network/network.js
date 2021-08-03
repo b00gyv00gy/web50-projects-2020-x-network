@@ -1,26 +1,52 @@
+
 document.addEventListener('DOMContentLoaded', function() {
 
-    document.querySelectorAll("button").forEach(element => {
+    document.querySelectorAll(".edit").forEach(element => {
         
         element.addEventListener("click", function(){
             
-            let post = element.closest("div").querySelector("textarea");
-            post.removeAttribute("readonly");
+            let post = element.closest("div");
+            post.querySelector("textarea").removeAttribute("readonly");
             
             let btn = document.createElement("button");
             btn.innerHTML = "SAVE";
             post.appendChild(btn);
-            btn.addEventListener("click", save_post())
-
+            
+            btn.addEventListener("click", function(){
+                fetch(`/posts/${post.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        content: post.querySelector("textarea").value
+                    })
+                  });
+                btn.remove();
+            }
+            )
         });
     });
+
+    document.querySelectorAll(".like").forEach(element => {
+        
+        let post = element.closest("div");
+        
+        
+        element.addEventListener("click", function(){
+
+            fetch(`/like_post/${post.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    post: post.id
+                })
+              });
+        });
+    });
+    
+    //fetch(`/likes/`)
+    //.then(response => response.json())
+    //.then(like => {
+    //
+    //})
 })
 
-function save_post(post_id){
-    fetch(`/posts/${post_id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-            content: post.value
-        })
-      });
-}
+
+

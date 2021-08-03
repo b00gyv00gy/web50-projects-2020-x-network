@@ -6,6 +6,9 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.db import IntegrityError
 
 from .models import User, Post, Like, Follower
 
@@ -127,6 +130,7 @@ def following(request):
         "page_obj": page_obj
     })
 
+
 @login_required
 def save_post(request, post_id):
 
@@ -147,3 +151,25 @@ def save_post(request, post_id):
             "error": "PUT request required."
         }, status=400)
 
+@csrf_exempt
+@login_required
+def like_post(request, post_id):
+
+    if request.method == "PUT":
+        post = Post.objects.get(pk=post_id)
+        user = request.user
+        
+        try:
+            like = Like(post=post, user=user)
+            like.save()
+            return HttpResponse(status=204)
+        except IntegrityError as e:
+            print(e)
+            return render(request, "network/index.html", {
+                "message": "error"
+            })
+
+    else:
+        return JsonResponse({
+            "error": "PUT request required."
+        }, status=400)

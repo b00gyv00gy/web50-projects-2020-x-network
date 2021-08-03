@@ -18,12 +18,12 @@
     {% endif %}
 
     {% for post in page_obj %}
-        <div class="post">
+        <div class="post" id="{{post.pk}}">
             <textarea readonly>{{post.content}}</textarea>
             <p>Posted by {{post.author}} on {{post.created}}</p>
-            
+            <button class="like">Like</button>
             {%if user == post.author%}
-                <button>EDIT</button>
+                <button class="edit">Edit</button>
             {%endif%}
 
         </div>    
