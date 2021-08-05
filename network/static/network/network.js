@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             post.appendChild(btn);
             
             btn.addEventListener("click", function(){
-                fetch(`/posts/${post.id}`, {
+                fetch(`/save_post/${post.id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
                         content: post.querySelector("textarea").value
@@ -27,25 +27,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll(".like").forEach(element => {
         
-        let post = element.closest("div");
+        let post = element.closest("div")
+
+        fetch(`/count_likes/${post.id}`)
+            .then((response) => {
+                return response.json();
+            })
+            .then(data => {
+                post.childNodes[5].innerHTML = data.num_of_likes
+                
+                if (data.like_status){
+                    post.childNodes[7].innerHTML = 'UNLIKE'
+                }
+                else{
+                    post.childNodes[7].innerHTML = 'LIKE'
+                }
+            });
         
         
+                
         element.addEventListener("click", function(){
 
-            fetch(`/like_post/${post.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    post: post.id
-                })
-              });
+            fetch(`/like_unlike_post/${post.id}`)
+            if (post.childNodes[7].innerHTML == 'LIKE') {
+                post.childNodes[7].innerHTML = 'UNLIKE'
+                post.childNodes[5].innerHTML++
+                }
+            else{
+                post.childNodes[7].innerHTML = 'LIKE'
+                post.childNodes[5].innerHTML--
+            }
+
+            });
         });
-    });
     
-    //fetch(`/likes/`)
-    //.then(response => response.json())
-    //.then(like => {
-    //
-    //})
 })
 
 

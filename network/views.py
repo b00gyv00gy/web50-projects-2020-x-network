@@ -9,6 +9,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
+from django.core import serializers
 
 from .models import User, Post, Like, Follower
 
@@ -18,6 +19,7 @@ class ContentForm(forms.Form):
 def index(request):
     
     posts = Post.objects.all().order_by('-created')
+
     paginator = Paginator(posts, 10)
 
     page_number = request.GET.get('page')
@@ -153,23 +155,38 @@ def save_post(request, post_id):
 
 @csrf_exempt
 @login_required
-def like_post(request, post_id):
+def like_unlike_post(request, post_id):
 
-    if request.method == "PUT":
-        post = Post.objects.get(pk=post_id)
-        user = request.user
-        
+    post = Post.objects.get(pk=post_id)
+    user = request.user
+
+    if Like.objects.filter(post=post, user=user).count() > 0:
+        Like.objects.filter(post=post, user=user).delete()
+        return HttpResponse(status=200)
+
+    else:    
         try:
             like = Like(post=post, user=user)
             like.save()
             return HttpResponse(status=204)
         except IntegrityError as e:
             print(e)
-            return render(request, "network/index.html", {
-                "message": "error"
+            return JsonResponse({
+                "error": "could not procees like"
             })
 
-    else:
-        return JsonResponse({
-            "error": "PUT request required."
-        }, status=400)
+def count_likes(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    user = request.user
+    like_status = Like.objects.filter(post=post, user=user).count() > 0
+
+    num_of_likes = Like.objects.filter(post=post).count()
+
+    return JsonResponse({
+        "num_of_likes": num_of_likes,
+        "like_status": like_status
+    })
+
+
+
+
