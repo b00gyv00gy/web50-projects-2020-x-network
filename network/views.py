@@ -132,7 +132,7 @@ def following(request):
         "page_obj": page_obj
     })
 
-
+@csrf_exempt
 @login_required
 def save_post(request, post_id):
 
