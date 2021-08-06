@@ -60,6 +60,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             });
         });
+
+        document.querySelectorAll(".follow_btn").addEventListener("click", function(){
+            
+            let username = document.getElementById("username").innerHTML
+
+            //fetch(`/follow/${username}`)
+            //if (post.childNodes[7].innerHTML == 'Follow') {
+            //    post.childNodes[7].innerHTML = 'Unfollow'
+            //    }
+            //else{
+            //    post.childNodes[7].innerHTML = 'LIKE'
+            //}
+        
+        });
     
 })
 

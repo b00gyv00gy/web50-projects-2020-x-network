@@ -1,11 +1,15 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+    
+    <p id="username">{{username}}</p>
+
     {% if user.is_authenticated %}
+    <button class="follow_btn"></button>
     {% endif %}
     
     <p>Followers: {{followed}}</p>
-    <p>User follows: {{follows}}</p> 
+    <p>Follows: {{follows}}</p> 
     <p>User posts:</p>
     {% for post in page_obj %}
         <p>{{post.content}}</p>

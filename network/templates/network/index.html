@@ -22,7 +22,7 @@
         <div class="post" id="{{post.pk}}">
             
             <textarea readonly>{{post.content}}</textarea>
-            <p>Posted by {{post.author}} on {{post.created}}</p>
+            <p>Posted by <a href='profile/{{post.author.id}}' %}>{{ post.author }}</a> on {{post.created}}</p>
             <p></p>
             <button class="like">Like</button>
             {%if user == post.author%}

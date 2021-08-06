@@ -101,17 +101,19 @@ def create_post(request):
     else:
         return render(request, "network/index.html")
 
-def profile(request):
+def profile(request, user_id):
 
-    posts = Post.objects.filter(author=request.user).order_by('-created')
+    user = User.objects.get(pk=user_id)
+    posts = Post.objects.filter(author=user).order_by('-created')
     paginator = Paginator(posts, 10)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, "network/profile.html", {
-        "follows": Follower.objects.filter(follows=request.user).count(),
-        "followed": Follower.objects.filter(followed=request.user).count(),
+        "username": user.username,
+        "follows": Follower.objects.filter(follows=user).count(),
+        "followed": Follower.objects.filter(followed=user).count(),
         "page_obj": page_obj
     })
 
@@ -186,6 +188,26 @@ def count_likes(request, post_id):
         "num_of_likes": num_of_likes,
         "like_status": like_status
     })
+
+def follow(request, username):
+
+    follows = request.user
+    followed = User.objects.get(username=username)
+
+    if Follower.objects.filter(follows=follows, followed=followed).count() > 0:
+        Folllower.objects.filter(follows=follows, followed=followed).delete()
+        return HttpResponse(status=200)
+
+    else:    
+        try:
+            follower = Follower(follows=follows, followed=followed)
+            follower.save()
+            return HttpResponse(status=204)
+        except IntegrityError as e:
+            print(e)
+            return JsonResponse({
+                "error": "could not procees follow"
+            })
 
 
 
