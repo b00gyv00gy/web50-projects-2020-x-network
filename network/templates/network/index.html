@@ -23,7 +23,7 @@
             
             <textarea readonly>{{post.content}}</textarea>
             <p>Posted by <a href='profile/{{post.author.id}}' %}>{{ post.author }}</a> on {{post.created}}</p>
-            <p></p>
+            <p class='num_of_likes'></p>
             <button class="like">Like</button>
             {%if user == post.author%}
                 <button class="edit">Edit</button>

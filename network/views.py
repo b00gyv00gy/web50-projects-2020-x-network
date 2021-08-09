@@ -195,7 +195,7 @@ def follow(request, username):
     followed = User.objects.get(username=username)
 
     if Follower.objects.filter(follows=follows, followed=followed).count() > 0:
-        Folllower.objects.filter(follows=follows, followed=followed).delete()
+        Follower.objects.filter(follows=follows, followed=followed).delete()
         return HttpResponse(status=200)
 
     else:    
@@ -209,6 +209,23 @@ def follow(request, username):
                 "error": "could not procees follow"
             })
 
+def follow_status(request, username):
+    follows = request.user
+    followed = User.objects.get(username=username)
+
+    hide_follow_btn = False
+    follow_status = False
+    
+    if follows == followed:
+        hide_follow_btn = True
+
+    if Follower.objects.filter(follows=follows, followed=followed).count() > 0:
+        follow_status = True
+
+    return JsonResponse({
+        "hide_follow_btn": hide_follow_btn,
+        "follow_status": follow_status
+    })
 
 
 

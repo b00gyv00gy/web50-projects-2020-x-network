@@ -8,7 +8,7 @@
     <button class="follow_btn"></button>
     {% endif %}
     
-    <p>Followers: {{followed}}</p>
+    <p>Followers: <a id="num_of_followers">{{followed}}</a></p>
     <p>Follows: {{follows}}</p> 
     <p>User posts:</p>
     {% for post in page_obj %}
