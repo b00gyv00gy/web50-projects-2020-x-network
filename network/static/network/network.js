@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll(".edit").forEach(element => {
@@ -9,7 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
             post.querySelector("textarea").removeAttribute("readonly");
             
             let btn = document.createElement("button");
+            btn.className = "save";
             btn.innerHTML = "SAVE";
+            
             post.appendChild(btn);
             
             btn.addEventListener("click", function(){
@@ -28,19 +29,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll(".like").forEach(element => {
         
         let post = element.closest("div")
+        let like_btn = post.querySelector('.like')
+        let num_of_likes = post.querySelector('.num_of_likes')
 
         fetch(`/count_likes/${post.id}`)
             .then((response) => {
                 return response.json();
             })
             .then(data => {
-                post.childNodes[5].innerHTML = data.num_of_likes
+                num_of_likes.innerHTML = data.num_of_likes 
                 
                 if (data.like_status){
-                    post.childNodes[7].innerHTML = 'UNLIKE'
+                    like_btn.innerHTML = 'UNLIKE'
                 }
                 else{
-                    post.childNodes[7].innerHTML = 'LIKE'
+                    like_btn.innerHTML = 'LIKE'
                 }
             });
         
@@ -48,8 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
         element.addEventListener("click", function(){
             
-            let like_btn = post.querySelector('.like')
-            let num_of_likes = post.querySelector('.num_of_likes')
+            
 
             fetch(`/like_unlike_post/${post.id}`)
             if (like_btn.innerHTML== 'LIKE') {
@@ -108,6 +110,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
 })
-
 
 

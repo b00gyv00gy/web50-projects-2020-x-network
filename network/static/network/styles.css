@@ -1,0 +1,21 @@
+.like{
+    background-color: red;
+    font-size: 12px;
+    color: white;
+    border-radius: 8px;
+}
+.edit{
+    background-color: blue;
+    font-size: 12px;
+    color: white;
+    border-radius: 8px;
+}
+.save{
+    background-color: green;
+    font-size: 12px;
+    color: white;
+    border-radius: 8px;
+}
+.card{
+    margin-bottom: 10px;
+}

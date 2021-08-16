@@ -3,33 +3,42 @@
 {% block body %}
 
     {% if user.is_authenticated %}
-    <div id="new_post" style="display: block;">   
-    New Post
-        <form action="{% url 'create_post' %}" method="post"> 
-            {% csrf_token %}
-            <div class="form-group">
-                <input class="form-control" type="text" name="content">
+    <div class="card">
+        
+            <div class="card-body" id="new_post" style="display: block;">   
+                <h5 class="card-title">New Post</h5>
+                <form action="{% url 'create_post' %}" method="post"> 
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="content">
+                    </div>
+                    <div class="form-group">    
+                            {{ form.as_p }}         
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Post">
+                </form>
             </div>
-            <div class="form-group">    
-                    {{ form.as_p }}         
-            </div>
-            <input class="btn btn-primary" type="submit" value="Post">
-        </form>
-    </div> 
+        
+    </div>
     {% endif %}
 
     {% for post in page_obj %}
-        <div class="post" id="{{post.pk}}">
-            
-            <textarea readonly>{{post.content}}</textarea>
-            <p>Posted by <a href='profile/{{post.author.id}}' %}>{{ post.author }}</a> on {{post.created}}</p>
-            <p class='num_of_likes'></p>
-            <button class="like">Like</button>
-            {%if user == post.author%}
-                <button class="edit">Edit</button>
-            {%endif%}
+    <div class="card">
+        <div class="card-body">
+            <div class="post" id="{{post.pk}}">
+                <div class="form-group">
+                    <textarea class="form-control" readonly>{{post.content}}</textarea>
+                </div>
+                <h6 class="card-subtitle mb-2 text-muted">Posted by <a href='profile/{{post.author.id}}' %}>{{ post.author }}</a> on {{post.created}}</h6>
+                <button class="like">Like</button> <a class='num_of_likes'></a>
+                <p></p>
+                {%if user == post.author%}
+                    <button class="edit">Edit</button>
+                {%endif%}
 
-        </div>    
+            </div>
+        </div>
+    </div>   
     {%endfor%}
     
     <div class="pagination">
