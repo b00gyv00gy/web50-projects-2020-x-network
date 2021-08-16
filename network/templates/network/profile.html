@@ -2,21 +2,28 @@
 
 {% block body %}
     
-    <p id="username">{{username}}</p>
+    <h1 id="username">{{username}} </h1>
 
     {% if user.is_authenticated %}
     <button class="follow_btn"></button>
     {% endif %}
     
-    <p>Followers: <a id="num_of_followers">{{followed}}</a></p>
-    <p>Follows: {{follows}}</p> 
-    <p>User posts:</p>
-    {% for post in page_obj %}
-        <p>{{post.content}}</p>
-        <p>posted on {{post.created}}</p>
-        <p></p>
-    {%endfor%}
-
+    <div class="card">
+        <div class="card-body">
+        <h6>Followers: <a id="num_of_followers">{{followed}}</a></h6>
+        <h6>Follows: {{follows}}</h6> 
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">User posts</h5>
+            {% for post in page_obj %}
+                <p class="card-text">{{post.content}}</p>
+                <h6 class="card-subtitle mb-2 text-muted">posted on {{post.created}}</h6>
+                <p></p>
+            {%endfor%}
+        </div>
+    </div>
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}

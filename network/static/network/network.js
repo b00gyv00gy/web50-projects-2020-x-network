@@ -4,14 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         element.addEventListener("click", function(){
             
-            let post = element.closest("div");
-            post.querySelector("textarea").removeAttribute("readonly");
+            let post = element.closest("div")
+            let btn = post.querySelector('.edit')
             
-            let btn = document.createElement("button");
-            btn.className = "save";
-            btn.innerHTML = "SAVE";
+            post.querySelector("textarea").removeAttribute("readonly")
             
-            post.appendChild(btn);
+            btn.innerHTML = "SAVE"
             
             btn.addEventListener("click", function(){
                 fetch(`/save_post/${post.id}`, {
@@ -20,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         content: post.querySelector("textarea").value
                     })
                   });
-                btn.remove();
+                btn.innerHTML = "EDIT";
             }
             )
         });
