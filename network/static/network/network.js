@@ -1,28 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    
     document.querySelectorAll(".edit").forEach(element => {
-        
-        element.addEventListener("click", function(){
-            
-            let post = element.closest("div")
-            let btn = post.querySelector('.edit')
-            
-            post.querySelector("textarea").removeAttribute("readonly")
-            
-            btn.innerHTML = "SAVE"
-            
+
+        let post = element.closest("div")
+        let btn = post.querySelector('.edit')
+
             btn.addEventListener("click", function(){
-                fetch(`/save_post/${post.id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({
+                   
+                if (btn.innerHTML == 'SAVE'){
+                    console.log('save event')
+                    fetch(`/save_post/${post.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
                         content: post.querySelector("textarea").value
-                    })
-                  });
-                btn.innerHTML = "EDIT";
-            }
-            )
-        });
-    });
+                        })
+                    });
+                    post.querySelector("textarea").setAttribute("readonly", '')
+                    btn.innerHTML = "EDIT"
+                    return
+                }
+                if (btn.innerHTML == 'EDIT'){
+                    console.log('edit event')    
+                    post.querySelector("textarea").removeAttribute("readonly")
+                    btn.innerHTML = "SAVE"
+                    return
+                }
+                    
+            })
+    })
+        
+
 
     document.querySelectorAll(".like").forEach(element => {
         
@@ -43,26 +51,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 else{
                     like_btn.innerHTML = 'LIKE'
                 }
-            });
-        
-        
+            })
                 
         element.addEventListener("click", function(){
-            
-            
 
             fetch(`/like_unlike_post/${post.id}`)
             if (like_btn.innerHTML== 'LIKE') {
                 like_btn.innerHTML = 'UNLIKE'
                 num_of_likes.innerHTML++
-                }
-            else{
+            }
+            else {
                 like_btn.innerHTML = 'LIKE'
                 num_of_likes.innerHTML--
             }
-
-            });
-        });
+        })
+    })
         
         if (document.getElementById("username") != false && document.querySelector(".follow_btn") != false){
         
@@ -79,8 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         follow_btn.style.display = 'none'
                     }
                     if (data.follow_status){
-                        follow_btn.innerHTML = "UNFOLLOW"
-                        
+                        follow_btn.innerHTML = "UNFOLLOW"    
                     }
                     else{
                         follow_btn.innerHTML = "FOLLOW"
