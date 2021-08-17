@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener("click", function(){
                    
                 if (btn.innerHTML == 'SAVE'){
-                    console.log('save event')
                     fetch(`/save_post/${post.id}`, {
                         method: 'PUT',
                         body: JSON.stringify({
@@ -20,8 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.innerHTML = "EDIT"
                     return
                 }
-                if (btn.innerHTML == 'EDIT'){
-                    console.log('edit event')    
+                if (btn.innerHTML == 'EDIT'){    
                     post.querySelector("textarea").removeAttribute("readonly")
                     btn.innerHTML = "SAVE"
                     return
